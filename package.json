@@ -1,0 +1,30 @@
+{
+    "name": "audinquirer",
+    "version": "1.0.0",
+    "description": "analyze audible keywords",
+    "main": "index.js",
+    "scripts": {
+        "start-local": "set PORT=3001 && node index.js",
+        "start": "node index.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@serverless-chrome/lambda": "^1.0.0-57.2",
+        "chrome-aws-lambda": "^10.1.0",
+        "puppeteer-core": "^10.2.0",
+        "puppeteer-extra": "^3.1.18",
+        "puppeteer-extra-plugin-stealth": "^2.7.8",
+        "uglifyjs-webpack-plugin": "^2.2.0",
+        "user-agents": "^1.0.755"
+    },
+    "devDependencies": {
+        "chromium": "^3.0.2",
+        "serverless": "^2.55.0",
+        "serverless-offline": "^8.0.0",
+        "serverless-plugin-warmup": "^5.3.1",
+        "webpack": "^5.51.1",
+        "webpack-cli": "^4.8.0",
+        "zip-webpack-plugin": "^4.0.1"
+    }
+}

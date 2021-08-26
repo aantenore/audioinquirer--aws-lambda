@@ -1,0 +1,48 @@
+org: aantenore
+app: be-lambda-audioinquirer
+
+service: be-lambda-audioinquirer
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: eu-west-2
+functions:
+  getBooks:
+    handler: handler.getBooks
+    events:
+      - http: 
+          path: getBooks
+          method: post
+      - http:
+          method: options
+          path: getBooks
+    memorySize: 1024
+    timeout: 60
+  getBookDetails:
+    handler: handler.getBookDetails
+    events:
+      - http: 
+          path: getBookDetails
+          method: post
+      - http:
+          method: options
+          path: getBookDetails
+    memorySize: 2048
+    timeout: 120
+  getBookUrl:
+    handler: handler.getBookUrl
+    events:
+      - http: 
+          path: getBookUrl
+          method: post
+      - http:
+          method: options
+          path: getBookUrl
+    memorySize: 2048
+    timeout: 120
+plugins:
+  - serverless-offline
