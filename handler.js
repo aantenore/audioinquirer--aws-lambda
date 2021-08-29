@@ -233,8 +233,8 @@ var end = async (page) => {
 var initPage = async (url, browser) => {
   try {
     var page = await browser.newPage()
-    var timeout = 25000
-    await page.setRequestInterception(true);
+    var timeout = 60000
+    /*await page.setRequestInterception(true);
     await page.removeAllListeners('request');
     page.on("request", async (req) => {
       try {
@@ -249,7 +249,7 @@ var initPage = async (url, browser) => {
       } catch (e) {
         console.log(e, 'Error in onRequest')
       }
-    })
+    })*/
     await page.setUserAgent(userAgent.toString())
     await page.goto(url, { timeout: timeout})
     return page
