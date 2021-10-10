@@ -131,8 +131,10 @@ var getBooksIn = async (url) => {
     let asinLength = 10
     let pageForAsinBaseUrl = 'https://www.audible.com/amazon-reviews/'
     let asinPrefix = '{"asin":"'
-    for(let book in books){
+    for(let i in books){
+      let book = books[i]
       let audibleUrl = book['audibleUrlAU']
+      console.log('test', book)
       let indexOfQueryParamStart = audibleUrl.indexOf("?")
       if(indexOfQueryParamStart>10){
         let audibleAsin = audibleUrl.substr(indexOfQueryParamStart - asinLength,indexOfQueryParamStart)
