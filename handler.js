@@ -127,28 +127,24 @@ var getBooksIn = async (url) => {
     return booksAndCompetitor
   }).catch(e => console.log('Error retrieving the books from audible, please retry \n', e))
   if(booksAndCompetitor.books.length > 0){
-    let books = {...booksAndCompetitor.books}
+    let books = booksAndCompetitor.books
     let asinLength = 10
     let pageForAsinBaseUrl = 'https://www.audible.com/amazon-reviews/'
     let asinPrefix = '{"asin":"'
     for(let i in books){
       let book = books[i]
       let audibleUrl = book['audibleUrlAU']
-      console.log('test', book)
       let indexOfQueryParamStart = audibleUrl.indexOf("?")
       if(indexOfQueryParamStart>10){
         let audibleAsin = audibleUrl.substr(indexOfQueryParamStart - asinLength,indexOfQueryParamStart)
         let pageUrl = pageForAsinBaseUrl + audibleAsin
         await page.goto(pageUrl)
+        await page.waitForSelector('#cr-state-object')
         book['asinAU'] = await page.evaluate(()=>{
-          let asin
-          let stringContainingAsin = document.querySelector('.cr-state-object').getAttribute('data-state')
-          let indexOfAsinStart = stringContainingAsin.indexOf(asinPrefix) + asinPrefix.length
-          if(indexOfAsinStart > asinPrefix.length){
-            asin = stringContainingAsin.substr(indexOfAsinStart, indexOfAsinStart + asinLength)
-          }
-          return asin
-        }).catch(e=>console.log('Error retrieving asin for book'+book['audibleUrlAU']+'\n',e))
+          let stringContainingAsin = document.querySelector('#cr-state-object').getAttribute('data-state')
+          let dataState = JSON.parse(stringContainingAsin)
+          return dataState.asin
+        }).catch(e=>console.log('Error retrieving asin for book '+book['audibleUrlAU']+'\n',e))
       }
     }
   }
