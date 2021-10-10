@@ -82,7 +82,7 @@ var getBooksIn = async (url) => {
   let browser = await initBrowser()
   var page = await initPage(url, browser);
   var err = "No errors"
-  var result = await page.evaluate(() => {
+  var booksAndCompetitor = await page.evaluate(() => {
     try {
       var booksAndCompetitor = {
         books: []
@@ -120,16 +120,40 @@ var getBooksIn = async (url) => {
           booksAndCompetitor.books.push(book)
         })
       }
-      return booksAndCompetitor
     } catch (e) {
       err = e
       throw e
     }
+    return booksAndCompetitor
   }).catch(e => console.log('Error retrieving the books from audible, please retry \n', e))
+  if(booksAndCompetitor.books.length > 0){
+    let books = {...booksAndCompetitor.books}
+    let asinLength = 10
+    let pageForAsinBaseUrl = 'https://www.audible.com/amazon-reviews/'
+    let asinPrefix = '{"asin":"'
+    for(let book in books){
+      let audibleUrl = book['audibleUrlAU']
+      let indexOfQueryParamStart = audibleUrl.indexOf("?")
+      if(indexOfQueryParamStart>10){
+        let audibleAsin = audibleUrl.substr(indexOfQueryParamStart - asinLength,indexOfQueryParamStart)
+        let pageUrl = pageForAsinBaseUrl + audibleAsin
+        await page.goto(pageUrl)
+        book['asinAU'] = await page.evaluate(()=>{
+          let asin
+          let stringContainingAsin = document.querySelector('.cr-state-object').getAttribute('data-state')
+          let indexOfAsinStart = stringContainingAsin.indexOf(asinPrefix) + asinPrefix.length
+          if(indexOfAsinStart > asinPrefix.length){
+            asin = stringContainingAsin.substr(indexOfAsinStart, indexOfAsinStart + asinLength)
+          }
+          return asin
+        }).catch(e=>console.log('Error retrieving asin for book'+book['audibleUrlAU']+'\n',e))
+      }
+    }
+  }
   console.log(err)
   end(page)
   browser.close();
-  return result
+  return booksAndCompetitor
 }
 
 var getBookDetailsIn = async (urlObj) => {

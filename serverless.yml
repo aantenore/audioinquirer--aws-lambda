@@ -21,7 +21,7 @@ functions:
           method: options
           path: getBooks
     memorySize: 1024
-    timeout: 60
+    timeout: 120
   getBookDetails:
     handler: handler.getBookDetails
     events:
